@@ -1,0 +1,24 @@
+{
+  "name": "code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "mocha **/*/*.test.js",
+    "test-watch": "nodemon --exec \"npm test\""
+  },
+  "engines": {
+    "node": "8.10.0"
+  },
+  "author": "Manas Ranjan Swain",
+  "license": "ISC",
+  "devDependencies": {
+    "expect": "^24.7.1",
+    "mocha": "^6.1.4"
+  },
+  "dependencies": {
+    "npm": "^6.9.0",
+    "require-uncached": "^2.0.0"
+  }
+}
