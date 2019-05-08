@@ -27,6 +27,8 @@
     "npm": "^6.8.0",
     "request": "^2.88.0",
     "socket.io": "^1.7.4",
-    "yargs": "^4.8.1"
+    "yargs": "^4.8.1",
+    "moment": "^2.15.1",
+    "require-uncached": "^2.0.0"
   }
 }
