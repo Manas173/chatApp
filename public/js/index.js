@@ -5,7 +5,7 @@ socket.on('connect',function () {
 socket.on('disconnect',function() {
     console.log('Disconnected from server !')
     var li= jQuery('<li> </li>');
-    li.text('User disconnected from the chatroom !');
+    li.text('You got disconnected from the server !');
     jQuery(`#messages`).append(li);
 })
 socket.on('newMail',function(email) {
@@ -32,27 +32,60 @@ locationButton.on('click',function(){
 })
 
 socket.on('newLocationMessage',function(message){
-    var li = jQuery('<li> </li>');
-    var a = jQuery('<a target="_blank">My current location</a>');
-    li.text(`${message.from}:`);
-    a.attr('href',message.url);
-    li.append(a);
-    jQuery('#messages').append(li);
+    var formattedTime = moment(message.createdAt).format('hh:mm a');
+    var template = jQuery('#location-message-template').html();
+    var html = Mustache.render(template,{
+        from: message.from,
+        url: message.url,
+        createdAt: formattedTime
+    })
+    jQuery('#messages').append(html);
+    scrollToBottom();
+    // var li = jQuery('<li></li>');
+    // var a = jQuery('<a target="_blank">My current location</a>');
+    // li.text(`${message.from} ${formattedTime}: `)
+    // a.attr('href',message.url);
+    // li.append(a);
+    // jQuery('#messages').append(li);
 })
 
 jQuery('#message-form').on('submit',function(e){
     e.preventDefault();
+    var text = jQuery('[name=message').val();
+    $('#message-form').children('#message-input').val('');
     socket.emit('createMessage',{
         from:'User',
-        text:jQuery('[name=message]').val()
+        text
     },function(){
 
     })
 })
 
+function scrollToBottom(){
+    var messages = jQuery('#messages');
+    var newMessage = messages.children('li:last-child');
+    var newMessageHeight = newMessage.innerHeight();
+    var prevMessageHeight = newMessage.prev().innerHeight();
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+
+    if(clientHeight+scrollTop+newMessageHeight+prevMessageHeight >= scrollHeight){
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 socket.on('newMessage',function(message){
-    console.log(message);
-    var li= jQuery('<li> </li>');
-    li.text(`${message.from}: ${message.text}`);
-    jQuery(`#messages`).append(li);
+    var formattedTime = moment(message.createdAt).format('hh:mm a');
+    var template = jQuery('#message-template').html();
+    var html = Mustache.render(template,{
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+    });
+    jQuery('#messages').append(html);
+    scrollToBottom();
+    // var li= jQuery('<li> </li>');
+    // li.text(`${message.from} ${formattedTime}: ${message.text}`);
+    // jQuery(`#messages`).append(li);
 })

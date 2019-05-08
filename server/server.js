@@ -7,6 +7,7 @@ var PORT = process.env.PORT || 3000;
 var http = require('http');
 var server = http.createServer(app);
 var io = socketIO(server);
+var moment = require('moment');
 var {generateMessage,generateLocationMessage} = require('./utils/message');
 
 app.use(express.static(publicPath));
@@ -14,16 +15,16 @@ app.use(express.static(publicPath));
 io.on('connection',(socket) => {
 	console.log('New user connected !');
 
-	socket.emit('newMail',{
-		from: 'Admin (Manas)',
+	socket.emit('newMessage',{
+		from: 'Admin',
 		text: 'Welcome to the chat App',
-		createdAt: new Date().getTime()
+		createdAt: moment().valueOf()
 	})
 
-	socket.broadcast.emit('newMail',{
-		from: 'Admin (Manas)',
+	socket.broadcast.emit('newMessage',{
+		from: 'Admin',
 		text: 'New user joined',
-		createdAt: new Date().getTime()
+		createdAt: moment().valueOf()
 	})
 
 	socket.on('createLocationMessage',(coords)=>{
